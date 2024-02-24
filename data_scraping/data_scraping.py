@@ -29,14 +29,16 @@ try:
     list = wait.until(EC.presence_of_all_elements_located((By.XPATH, "//div[contains(@class, 'fp_listitem')]")))
     print("Ready")
 except Exception as e:
-    print("Timeout error: ${e}")
+    print("Timeout error: ${e}. \nYou may retry for a different outcome.")
 
 
 i = 0
 for item in list:
-    # print(item.get_attribute("data-latitude"))
-    name = item.find_element(By.TAG_NAME, "h4").get_attribute("textContent")
-    print(name)
+    # Start registering data.
+    # name will be blank if it is not a part of "kuala lumpur" query result.
+    name = item.find_element(By.TAG_NAME, "h4").text
+    if (name == ""):
+        continue
     address = item.find_element(By.XPATH, ".//div[@class='location_left']/div[@class='infoboxcontent']/p").get_attribute("textContent")
     operating_hours = ""
     try:
@@ -57,7 +59,7 @@ for item in list:
         "latitude": latitude,
         "longitude": longitude,
     })
-    time.sleep(0.015)
+    time.sleep(0.015)   # Delay for spam-prevention
     i += 1
     # if i > 15:
     #     break
