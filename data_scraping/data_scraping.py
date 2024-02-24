@@ -23,7 +23,6 @@ wait = WebDriverWait(driver, 10) # Timeout as search takes time
 
 # Registering data into dataframe
 entries = []
-
 list = None
 try:
     list = wait.until(EC.presence_of_all_elements_located((By.XPATH, "//div[contains(@class, 'fp_listitem')]")))
@@ -31,10 +30,9 @@ try:
 except Exception as e:
     print("Timeout error: ${e}. \nYou may retry for a different outcome.")
 
-
+# Step 2 - Start registering data.
 i = 0
 for item in list:
-    # Start registering data.
     # name will be blank if it is not a part of "kuala lumpur" query result.
     name = item.find_element(By.TAG_NAME, "h4").text
     if (name == ""):
@@ -62,13 +60,11 @@ for item in list:
     i += 1
     # if i > 15:
     #     break
-
 print(entries)
-# Storing data as CSV
+
+# Step 3 - Storing data as CSV
 current_directory = os.getcwd()  # Get the current working directory
 csv_file_path = os.path.join(current_directory, 'dataset.csv')
 df = pd.DataFrame(entries, columns=['name', 'address', 'operating_hours', 'waze_link', 'latitude', 'longitude'])
-df.to_csv(csv_file_path, index=False)
+df.to_csv(csv_file_path, index=False, encoding="utf-8-sig")
 driver.quit()
-# # Add a delay between requests to avoid overwhelming the website with requests
-# time.sleep(1)
