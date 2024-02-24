@@ -39,15 +39,14 @@ for item in list:
     name = item.find_element(By.TAG_NAME, "h4").text
     if (name == ""):
         continue
-    address = item.find_element(By.XPATH, ".//div[@class='location_left']/div[@class='infoboxcontent']/p").get_attribute("textContent")
-    operating_hours = ""
-    try:
-        operating_hours = item.find_element(By.XPATH, ".//div[@class='infoboxcontent']/p[3]").get_attribute("textContent")
-        operating_hours_2 = item.find_element(By.XPATH, ".//div[@class='infoboxcontent']/p[4]").get_attribute("textContent")
-        if operating_hours != "":
-            operating_hours = operating_hours + "; " + operating_hours_2
-    except:
-        pass
+    address = item.find_element(By.XPATH, ".//div[@class='location_left']/div[@class='infoboxcontent']").text.splitlines()[0]
+    operating_hours = "; ".join(item.find_element(By.XPATH, ".//div[@class='infoboxcontent']").text.splitlines()[1:])
+    # addr and operating_hours are annoyingly sharing the same div - Sometimes the dates are stored in address.
+    # Move addr to operating_hours if this happens.
+    address_check = address.upper()
+    if address_check.startswith("MON"):
+        operating_hours = address
+        address = ""
     waze_link = item.find_element(By.XPATH, ".//div[@class='directionButton']/a[2]").get_attribute("href")
     latitude = item.get_attribute("data-latitude")
     longitude = item.get_attribute("data-longitude")
