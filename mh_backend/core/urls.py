@@ -17,6 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from quickstart.views import BranchViewSet
+
+branch_list = BranchViewSet.as_view({
+    'get': 'list',
+})
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('branches/', branch_list),
 ]
